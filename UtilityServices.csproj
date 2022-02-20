@@ -1,0 +1,22 @@
+﻿<Project>
+	<PropertyGroup>
+		<PackageLicenseExpression>EUPL-1.2</PackageLicenseExpression>
+		<PackageTags>openmod openmod-plugin unturned</PackageTags>
+		<RootNamespace>Alpalis.UtilityServices</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateNugetPackage>true</GenerateNugetPackage>
+		<Product>Alpalis UtilityServices Plugin</Product>
+		<Authors>Pandetthe</Authors>
+		<Version>0.1.0</Version>
+		<InformationalVersion>0.1.0</InformationalVersion>
+		<PackageVersion>0.1.0</PackageVersion>
+		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="config.yaml" />
+		<EmbeddedResource Include="translations.yaml" />
+	</ItemGroup>
+
+	<Import Project="..\shared.csproj" />
+</Project>
