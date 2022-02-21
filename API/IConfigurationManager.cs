@@ -21,17 +21,19 @@ namespace Alpalis.UtilityServices.API
         /// <param name="plugin">Specified plugin's data</param>
         /// <param name="config">Config of specified plugin</param>
         Task LoadConfig(OpenModUnturnedPlugin plugin, MainConfig config);
-        
+
         /// <summary>
         /// Reloads config of specified plugin.
         /// </summary>
         /// <param name="pluginName">Full displayname of plugin</param>
-        Task ReloadConfig(string pluginName);
+        /// <returns>Return if reloading of plugin's config is successful</returns>
+        Task<bool> ReloadConfig(string pluginName);
 
         /// <summary>
         /// Reloads all plugin' configs.
         /// </summary>
-        Task ReloadAllConfig();
+        /// <returns>List of plugins' names that configs are reloaded</returns>
+        Task<List<string>> ReloadAllConfig();
 
         /// <summary>
         /// Returns config of specified plugin.

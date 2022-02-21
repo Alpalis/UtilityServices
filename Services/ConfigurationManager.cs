@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Alpalis.UtilityServices.Services
@@ -49,7 +48,7 @@ namespace Alpalis.UtilityServices.Services
                 }
                 catch (Exception)
                 {
-                    m_Logger.LogInformation(string.Format("The config variable \"{0}\" has been reset to the default \"{1}\".",
+                    m_Logger.LogDebug(string.Format("The config variable \"{0}\" has been reset to the default \"{1}\".",
                         property.Name, property.GetValue(config)));
                 }
             }
@@ -57,31 +56,36 @@ namespace Alpalis.UtilityServices.Services
                 Configs[plugin.OpenModComponentId] = config;
             else
                 Configs.Add(plugin.OpenModComponentId, config);
-            m_Logger.LogInformation(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
+            m_Logger.LogDebug(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
         }
 
-        public async Task ReloadConfig(string pluginName)
+        public async Task<bool> ReloadConfig(string pluginName)
         {
             OpenModUnturnedPlugin plugin = (OpenModUnturnedPlugin)m_PluginActivator.ActivatedPlugins
                 .FirstOrDefault(name => name.DisplayName.Equals(pluginName, StringComparison.OrdinalIgnoreCase));
-            if (plugin == null) return;
+            if (plugin == null) return false;
             MainConfig? config = Configs.FirstOrDefault(obj => obj.Key == plugin.OpenModComponentId).Value;
-            if (config == null) return;
+            if (config == null) return false;
             await LoadConfig(plugin, config);
+            return true;
         }
 
-        public async Task ReloadAllConfig()
+        public async Task<List<string>> ReloadAllConfig()
         {
-            m_Logger.LogInformation("Reloading all plugins' configs!");
-            foreach (KeyValuePair<string, MainConfig> data in Configs)
+            m_Logger.LogDebug("Reloading all plugins' configs!");
+            List<string> plugins = new();
+            Dictionary<string, MainConfig> configsClone = new(Configs);
+            foreach (KeyValuePair<string, MainConfig> data in configsClone)
             {
                 OpenModUnturnedPlugin plugin = (OpenModUnturnedPlugin)m_PluginActivator.ActivatedPlugins
                     .FirstOrDefault(name => name.OpenModComponentId.Equals(data.Key, StringComparison.Ordinal));
                 if (plugin == null) continue;
+                plugins.Add(plugin.DisplayName);
                 m_Logger.LogInformation(string.Format("Reloading \"{0}\" config!", plugin.DisplayName));
                 LoadConfig(plugin, data.Value);
             }
-            m_Logger.LogInformation("Succesfully reloaded configs!");
+            m_Logger.LogDebug("Succesfully reloaded configs!");
+            return plugins;
         }
 
         public T GetConfig<T>(OpenModUnturnedPlugin plugin)
