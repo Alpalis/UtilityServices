@@ -1,12 +1,11 @@
 ﻿using Alpalis.UtilityServices.API;
-using Alpalis.UtilityServices.Helpers;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using OpenMod.API.Commands;
 using OpenMod.Core.Commands;
 using OpenMod.Unturned.Commands;
 using System;
+using System.Collections.Generic;
 
 namespace Alpalis.UtilityServices.Commands
 {
@@ -19,20 +18,23 @@ namespace Alpalis.UtilityServices.Commands
     {
         #region Member Variables
         private readonly IStringLocalizer m_StringLocalizer;
+        private readonly IAdminModeImplementation m_AdminModeImplementation;
         #endregion Member Variables
 
         #region Class Constructor
         public ConfigRootCommand(
             IStringLocalizer stringLocalizer,
+            IAdminModeImplementation adminModeImplementation,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_StringLocalizer = stringLocalizer;
+            m_AdminModeImplementation = adminModeImplementation;
         }
         #endregion Class Constructor
 
         protected override UniTask OnExecuteAsync()
         {
-            if (!AdminModeHelper.IsInAdminMode(Context.Actor))
+            if (!m_AdminModeImplementation.IsInAdminMode(Context.Actor))
                 throw new UserFriendlyException(m_StringLocalizer["reload_command:error_admin_mode"]);
             throw new CommandWrongUsageException(Context);
         }
@@ -49,34 +51,39 @@ namespace Alpalis.UtilityServices.Commands
         #region Member Variables
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly IConfigurationManager m_ConfigurationManager;
+        private readonly IAdminModeImplementation m_AdminModeImplementation;
         #endregion Member Variables
 
         #region Class Constructor
         public ConfigReloadCommand(
             IStringLocalizer stringLocalizer,
             IConfigurationManager configurationManager,
+            IAdminModeImplementation adminModeImplementation,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_StringLocalizer = stringLocalizer;
             m_ConfigurationManager = configurationManager;
+            m_AdminModeImplementation = adminModeImplementation;
         }
         #endregion Class Constructor
 
         protected override async UniTask OnExecuteAsync()
         {
-            if (!AdminModeHelper.IsInAdminMode(Context.Actor))
+            if (!m_AdminModeImplementation.IsInAdminMode(Context.Actor))
                 throw new UserFriendlyException(m_StringLocalizer["reload_command:error_admin_mode"]);
             if (Context.Parameters.Count == 0)
             {
-                m_ConfigurationManager.ReloadAllConfig();
-                PrintAsync("");
+                List<string> plugins = await m_ConfigurationManager.ReloadAllConfig();
+                PrintAsync(m_StringLocalizer["config_command:succeed_many", new { Plugins = string.Join(", ", plugins) }]);
                 return;
             }
             if (Context.Parameters.Count != 1)
                 throw new CommandWrongUsageException(Context);
             if (!Context.Parameters.TryGet(0, out string? pluginName) || pluginName == null)
-                throw new UserFriendlyException(m_StringLocalizer["company_command:error_null_pluginname"]);
-
+                throw new UserFriendlyException(m_StringLocalizer["config_command:error_null_pluginname"]);
+            if (!await m_ConfigurationManager.ReloadConfig(pluginName))
+                throw new UserFriendlyException(m_StringLocalizer["config_command:error_unknown_plugin", new { PluginName = pluginName}]);
+            PrintAsync(m_StringLocalizer["config_command:succeed", new { PluginName = pluginName }]);
         }
     }
 }
