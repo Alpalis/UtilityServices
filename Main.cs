@@ -1,5 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Alpalis.UtilityServices.API;
+using Alpalis.UtilityServices.Models;
+using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.Unturned.Plugins;
@@ -18,19 +19,25 @@ namespace Alpalis.UtilityServices
     {
         #region Member Variables
         private readonly ILogger<Main> m_Logger;
+        private readonly IConfigurationManager m_ConfigurationManager;
         #endregion Member Variables
 
         #region Class Constructor
         public Main(
             ILogger<Main> logger,
+            IConfigurationManager configurationManager,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_Logger = logger;
+            m_ConfigurationManager = configurationManager;
         }
         #endregion Class Constructor
 
         protected override async UniTask OnLoadAsync()
         {
+            // Configuration load
+            await m_ConfigurationManager.LoadConfig(this, new Config());
+
             // Plugin Load Logging
             m_Logger.LogInformation("Plugin started successfully!");
         }
