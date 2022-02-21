@@ -1,0 +1,6 @@
+config_command:
+    error_admin_mode: "<color=#630000>| Alpalis |</color> Nie możesz przepuścić kogoś w kolejce bez trybu administratora."
+    succeed_many: "<color=#630000>| Alpalis |</color> Pomyslnie ponownie wczytałeś pliki konfiguracyjne następujących pluginów: {Plugins}."
+    error_null_pluginname: "<color=#630000>| Alpalis |</color> Podałeś nieprawidłową nazwę pluginu."
+    error_unknown_plugin: "<color=#630000>| Alpalis |</color> Nie znaleziono pluginu o nazwie {PluginName}."
+    succeed: "<color=#630000>| Alpalis |</color> Pomyslnie ponownie wczytałeś plik konfiguracyjny pluginu {PluginName}."
