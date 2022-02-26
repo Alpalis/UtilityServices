@@ -1,6 +1,8 @@
 ﻿using Alpalis.UtilityServices.API;
+using Alpalis.UtilityServices.Events;
 using Alpalis.UtilityServices.Models;
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.Unturned.Plugins;
@@ -19,6 +21,7 @@ namespace Alpalis.UtilityServices
     {
         #region Member Variables
         private readonly ILogger<Main> m_Logger;
+        private readonly IDisposable m_KeyHandlerEvent;
         private readonly IConfigurationManager m_ConfigurationManager;
         #endregion Member Variables
 
@@ -29,6 +32,7 @@ namespace Alpalis.UtilityServices
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_Logger = logger;
+            m_KeyHandlerEvent = ActivatorUtilities.CreateInstance<HandleKey>(serviceProvider);
             m_ConfigurationManager = configurationManager;
         }
         #endregion Class Constructor
@@ -44,6 +48,9 @@ namespace Alpalis.UtilityServices
 
         protected override async UniTask OnUnloadAsync()
         {
+            // Event instance disposing
+            m_KeyHandlerEvent.Dispose();
+
             // Plugin unload logging
             m_Logger.LogInformation("Plugin disabled successfully!");
         }
