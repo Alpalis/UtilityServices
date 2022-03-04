@@ -1,6 +1,7 @@
 ﻿using Alpalis.UtilityServices.API;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using OpenMod.API.Eventing;
 using SDG.Unturned;
 using Steamworks;
 using System;
@@ -12,15 +13,18 @@ namespace Alpalis.UtilityServices.Events
         #region Member Variables
         private readonly IKeyHandler m_KeyHandler;
         private readonly ILogger<HandleKey> m_Logger;
+        private readonly IEventBus m_EventBus;
         #endregion Member Variables
 
         #region Class Constructor
         public HandleKey(
             IKeyHandler keyHandler,
-            ILogger<HandleKey> logger)
+            ILogger<HandleKey> logger,
+            IEventBus eventBus)
         {
             m_KeyHandler = keyHandler;
             m_Logger = logger;
+            m_EventBus = eventBus;
             PlayerInput.onPluginKeyTick += OnKeyPressed;
         }
         #endregion Class Constructor
@@ -83,7 +87,6 @@ namespace Alpalis.UtilityServices.Events
         public void Dispose()
         {
             PlayerInput.onPluginKeyTick -= OnKeyPressed;
-            return;
         }
     }
 }
