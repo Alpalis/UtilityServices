@@ -42,6 +42,16 @@ namespace Alpalis.UtilityServices.API
         UniTask StopSideUI(SteamPlayer sPlayer, ushort ID);
 
         /// <summary>
+        /// Stops the side UI for the player with animation. It's disabling name + Entry object and enabling name + Exit object
+        /// </summary>
+        /// <param name="sPlayer">SteamPlayer</param>
+        /// <param name="ID">Asset ID of UI</param>
+        /// <param name="key">Key of UI</param>
+        /// <param name="name">Name of object to aniamte</param>
+        /// <param name="time">Time of animation in miliseconds</param>
+        UniTask StopSideUI(SteamPlayer sPlayer, ushort ID, short key, string name, int time);
+
+        /// <summary>
         /// Stops all UIs for the player.
         /// </summary>
         /// <param name="sPlayer">SteamPlayer</param>

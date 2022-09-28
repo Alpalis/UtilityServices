@@ -11,31 +11,31 @@ namespace Alpalis.UtilityServices.Commands
 {
     #region Command Parameters
     [Command("config")]
-    [CommandSyntax("reload")]
+    [CommandSyntax("<reload>")]
     [CommandDescription("Command to manage plugins' configs.")]
     #endregion Command Parameters
     public class ConfigRootCommand : UnturnedCommand
     {
         #region Member Variables
         private readonly IStringLocalizer m_StringLocalizer;
-        private readonly IAdminModeImplementation m_AdminModeImplementation;
+        private readonly IAdminManagerImplementation m_AdminManagerImplementation;
         #endregion Member Variables
 
         #region Class Constructor
         public ConfigRootCommand(
             IStringLocalizer stringLocalizer,
-            IAdminModeImplementation adminModeImplementation,
+            IAdminManagerImplementation adminManagerImplementation,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_StringLocalizer = stringLocalizer;
-            m_AdminModeImplementation = adminModeImplementation;
+            m_AdminManagerImplementation = adminManagerImplementation;
         }
         #endregion Class Constructor
 
         protected override UniTask OnExecuteAsync()
         {
-            if (!m_AdminModeImplementation.IsInAdminMode(Context.Actor))
-                throw new UserFriendlyException(m_StringLocalizer["reload_command:error_admin_mode"]);
+            if (!m_AdminManagerImplementation.IsInAdminMode(Context.Actor))
+                throw new UserFriendlyException(m_StringLocalizer["reload_command:error_adminmode"]);
             throw new CommandWrongUsageException(Context);
         }
     }
@@ -51,26 +51,26 @@ namespace Alpalis.UtilityServices.Commands
         #region Member Variables
         private readonly IStringLocalizer m_StringLocalizer;
         private readonly IConfigurationManager m_ConfigurationManager;
-        private readonly IAdminModeImplementation m_AdminModeImplementation;
+        private readonly IAdminManagerImplementation m_AdminManagerImplementation;
         #endregion Member Variables
 
         #region Class Constructor
         public ConfigReloadCommand(
             IStringLocalizer stringLocalizer,
             IConfigurationManager configurationManager,
-            IAdminModeImplementation adminModeImplementation,
+            IAdminManagerImplementation adminManagerImplementation,
             IServiceProvider serviceProvider) : base(serviceProvider)
         {
             m_StringLocalizer = stringLocalizer;
             m_ConfigurationManager = configurationManager;
-            m_AdminModeImplementation = adminModeImplementation;
+            m_AdminManagerImplementation = adminManagerImplementation;
         }
         #endregion Class Constructor
 
         protected override async UniTask OnExecuteAsync()
         {
-            if (!m_AdminModeImplementation.IsInAdminMode(Context.Actor))
-                throw new UserFriendlyException(m_StringLocalizer["reload_command:error_admin_mode"]);
+            if (!m_AdminManagerImplementation.IsInAdminMode(Context.Actor))
+                throw new UserFriendlyException(m_StringLocalizer["reload_command:error_adminmode"]);
             if (Context.Parameters.Count == 0)
             {
                 List<string> plugins = await m_ConfigurationManager.ReloadAllConfig();

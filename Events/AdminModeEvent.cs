@@ -1,5 +1,4 @@
 ﻿using OpenMod.API.Commands;
-using OpenMod.API.Eventing;
 using OpenMod.Core.Eventing;
 using Steamworks;
 

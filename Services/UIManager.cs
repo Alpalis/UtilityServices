@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Ioc;
 using OpenMod.API.Prioritization;
+using OpenMod.Core.Helpers;
 using SDG.Unturned;
 using Steamworks;
 using System;
@@ -116,6 +117,23 @@ namespace Alpalis.UtilityServices.Services
             RemoveFromList(steamID, ID);
             await UniTask.SwitchToMainThread();
             EffectManager.askEffectClearByID(ID, sPlayer.transportConnection);
+        }
+
+        public async UniTask StopSideUI(SteamPlayer sPlayer, ushort ID, short key, string name, int time)
+        {
+            CSteamID steamID = sPlayer.playerID.steamID;
+            RemoveFromList(steamID, ID);
+            m_Logger.LogDebug(string.Format("The Side UI has been removed for the player {0} ({1}).",
+                    sPlayer.playerID.characterName, steamID));
+            AsyncHelper.Schedule("UIAnimation", async () =>
+            {
+                await UniTask.SwitchToMainThread();
+                EffectManager.sendUIEffectVisibility(key, sPlayer.transportConnection, true, $"{name}Entry", false);
+                EffectManager.sendUIEffectVisibility(key, sPlayer.transportConnection, true, $"{name}Exit", true);
+                await UniTask.Delay(time);
+                if (IsUIEnabled(steamID, ID)) return;
+                EffectManager.askEffectClearByID(ID, sPlayer.transportConnection);
+            });
         }
 
         public async UniTask DisplayWarning(SteamPlayer sPlayer, ushort ID, string visibilityChildName, string textChildName, string text, int time)

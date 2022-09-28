@@ -7,10 +7,10 @@ using Steamworks;
 namespace Alpalis.UtilityServices.API
 {
     /// <summary>
-    /// Interface implementing Admin System.
+    /// Interface implementing AdminManager plugin.
     /// </summary>
     [Service]
-    public interface IAdminModeImplementation
+    public interface IAdminManagerImplementation
     {
         #region IsInAdminMode
         /// <summary>

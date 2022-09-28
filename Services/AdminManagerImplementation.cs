@@ -10,7 +10,7 @@ using Steamworks;
 namespace Alpalis.UtilityServices.Services
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
-    public class AdminModeImplementation : IAdminModeImplementation
+    public class AdminManagerImplementation : IAdminManagerImplementation
     {
         #region Member Variables
         private readonly IEventBus m_EventBus;
@@ -18,7 +18,7 @@ namespace Alpalis.UtilityServices.Services
         #endregion Member Variables
 
         #region Class Constructor
-        public AdminModeImplementation(
+        public AdminManagerImplementation(
             IEventBus eventBus,
             IPluginAccessor<Main> plugin)
         {
@@ -29,14 +29,14 @@ namespace Alpalis.UtilityServices.Services
 
         public bool IsInAdminMode(CSteamID steamID)
         {
-            AdminModeEvent? @event = new(steamID);
+            AdminModeEvent @event = new(steamID);
             m_EventBus.EmitAsync(m_Plugin, this, @event);
             return @event.IsInAdminMode;
         }
 
         public bool IsInAdminMode(ICommandActor actor)
         {
-            AdminModeEvent? @event = new(actor);
+            AdminModeEvent @event = new(actor);
             m_EventBus.EmitAsync(m_Plugin, this, @event);
             return @event.IsInAdminMode;
         }

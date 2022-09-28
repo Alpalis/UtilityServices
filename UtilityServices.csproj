@@ -15,9 +15,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="OpenMod.Unturned" Version="3.2.8" Condition="!Exists('..\shared.csproj')" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="config.yaml" />
 		<EmbeddedResource Include="translations.yaml" />
 	</ItemGroup>
 
-	<Import Project="..\shared.csproj" />
+	<Import Project="..\shared.csproj" Condition="Exists('..\shared.csproj')" />
+
+	<ItemGroup>
+	  <PackageReference Update="OpenMod.Unturned" Version="3.3.6" />
+	</ItemGroup>
 </Project>
