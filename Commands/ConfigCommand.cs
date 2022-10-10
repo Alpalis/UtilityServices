@@ -73,7 +73,7 @@ namespace Alpalis.UtilityServices.Commands
                 throw new UserFriendlyException(m_StringLocalizer["reload_command:error_adminmode"]);
             if (Context.Parameters.Count == 0)
             {
-                List<string> plugins = await m_ConfigurationManager.ReloadAllConfig();
+                List<string> plugins = await m_ConfigurationManager.ReloadAllConfigsAsync();
                 PrintAsync(m_StringLocalizer["config_command:succeed_many", new { Plugins = string.Join(", ", plugins) }]);
                 return;
             }
@@ -81,7 +81,7 @@ namespace Alpalis.UtilityServices.Commands
                 throw new CommandWrongUsageException(Context);
             if (!Context.Parameters.TryGet(0, out string? pluginName) || pluginName == null)
                 throw new UserFriendlyException(m_StringLocalizer["config_command:error_null_pluginname"]);
-            if (!await m_ConfigurationManager.ReloadConfig(pluginName))
+            if (!await m_ConfigurationManager.ReloadConfigAsync(pluginName))
                 throw new UserFriendlyException(m_StringLocalizer["config_command:error_unknown_plugin", new { PluginName = pluginName}]);
             PrintAsync(m_StringLocalizer["config_command:succeed", new { PluginName = pluginName }]);
         }

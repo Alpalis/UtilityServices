@@ -6,7 +6,7 @@
 		<RootNamespace>Alpalis.UtilityServices</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateNugetPackage>true</GenerateNugetPackage>
-		<Product>Alpalis UtilityServices Plugin</Product>
+		<Product>Alpalis aaUtilityServices Plugin</Product>
 		<Authors>Pandetthe</Authors>
 		<Version>0.1.2</Version>
 		<InformationalVersion>0.1.2</InformationalVersion>
@@ -26,6 +26,6 @@
 	<Import Project="..\shared.csproj" Condition="Exists('..\shared.csproj')" />
 
 	<ItemGroup>
-	  <PackageReference Update="OpenMod.Unturned" Version="3.3.6" />
+	  <PackageReference Update="OpenMod.Unturned" Version="3.3.8" />
 	</ItemGroup>
 </Project>
