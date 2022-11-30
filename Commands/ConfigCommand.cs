@@ -84,7 +84,12 @@ namespace Alpalis.UtilityServices.Commands
                 List<string> plugins = await m_ConfigurationManager.ReloadAllConfigsAsync();
                 PrintAsync(string.Format("{0}{1}",
                     Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "",
-                    m_StringLocalizer["config_command:reload:succeed_many", new { Plugins = string.Join(", ", plugins) }]));
+                    m_StringLocalizer["config_command:reload:succeed_many:title"]));
+                foreach (string plugin in plugins)
+                {
+                    await PrintAsync(m_StringLocalizer["config_command:reload:succeed_many:data",
+                        new { PluginName = plugin }]);
+                }
                 return;
             }
             if (Context.Parameters.Count != 1)
@@ -148,10 +153,10 @@ namespace Alpalis.UtilityServices.Commands
                 await PrintAsync(string.Format("{0}{1}",
                     Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "",
                     m_StringLocalizer["config_command:display:succeed_many:title"]));
-                foreach (KeyValuePair<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> plugin in configs)
+                foreach (KeyValuePair<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> pluginConfig in configs)
                 {
-                    await PrintAsync(m_StringLocalizer["config_command:display:succeed_many:plugin_title", new { PluginName = plugin.Key.DisplayName }]);
-                    foreach (KeyValuePair<string, string> property in plugin.Value)
+                    await PrintAsync(m_StringLocalizer["config_command:display:succeed_many:plugin_title", new { PluginName = pluginConfig.Key.DisplayName }]);
+                    foreach (KeyValuePair<string, string> property in pluginConfig.Value)
                     {
                         await PrintAsync(m_StringLocalizer["config_command:display:succeed_many:data",
                             new { Property = property.Key, Value = property.Value }]);
@@ -163,14 +168,19 @@ namespace Alpalis.UtilityServices.Commands
                 throw new UserFriendlyException(string.Format("{0}{1}",
                     Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "",
                     m_StringLocalizer["config_command:error_null_pluginname"]));
-            List<KeyValuePair<string, string>>? data = m_ConfigurationManager.GetConfigProperties(pluginName);
+            OpenModUnturnedPlugin? plugin = m_PluginActivator.GetPluginBySimmilarName(pluginName);
+            if (plugin == null)
+                throw new UserFriendlyException(string.Format("{0}{1}",
+                    Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "",
+                    m_StringLocalizer["config_command:error_unknown_plugin", new { PluginName = pluginName }]));
+            List<KeyValuePair<string, string>>? data = m_ConfigurationManager.GetConfigProperties(plugin);
             if (data == null)
                 throw new UserFriendlyException(string.Format("{0}{1}",
                     Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "", 
                     m_StringLocalizer["config_command:error_unknown_plugin", new { PluginName = pluginName }]));
             await PrintAsync(string.Format("{0}{1}",
                     Context.Actor is UnturnedUser ? m_StringLocalizer["config_command:prefix"] : "",
-                    m_StringLocalizer["config_command:display:succeed:title", new { PluginName = pluginName }]));
+                    m_StringLocalizer["config_command:display:succeed:title", new { PluginName = plugin.DisplayName }]));
             foreach (KeyValuePair<string, string> property in data)
             {
                 await PrintAsync(m_StringLocalizer["config_command:display:succeed:data",

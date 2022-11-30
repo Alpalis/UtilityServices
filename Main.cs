@@ -11,7 +11,7 @@ using System;
 #region NuGet Assembly Data
 [assembly:
     PluginMetadata("Alpalis.UtilityServices", Author = "Pandetthe",
-        DisplayName = "Alpalis UtilityServices Plugin",
+        DisplayName = "Alpalis UtilityServices",
         Website = "https://alpalis.eu")]
 #endregion Nuget Assembly Data
 

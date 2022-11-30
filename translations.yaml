@@ -5,8 +5,10 @@ config_command:
     # Placeholders: {PluginName}
     error_unknown_plugin: "The plugin named {PluginName} was not found."
     reload:
-        # Placeholders: {Plugins}
-        succeed_many: "You have successfully reloaded the configuration files of the following plugins: {Plugins}."
+        succeed_many:
+            title: "You have successfully reloaded the configuration files of the following plugins:"
+            # Placeholders: {PluginName}
+            data: "- {PluginName}"
         # Placeholders: {PluginName}
         succeed: "You have successfully reloaded the {PluginName} plugin configuration file."
     display:
