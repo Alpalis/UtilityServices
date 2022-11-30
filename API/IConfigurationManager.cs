@@ -21,21 +21,6 @@ namespace Alpalis.UtilityServices.API
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        T LoadConfig<T>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        T LoadConfig<T>(T config);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="plugin"></param>
         /// <returns></returns>
         T LoadConfig<T>(OpenModUnturnedPlugin plugin);
@@ -96,15 +81,28 @@ namespace Alpalis.UtilityServices.API
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="plugin"></param>
         /// <returns></returns>
-        T GetConfig<T>();
+        T GetConfig<T>(OpenModUnturnedPlugin plugin);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="plugin"></param>
         /// <returns></returns>
-        T GetConfig<T>(OpenModUnturnedPlugin plugin);
+        List<KeyValuePair<string, string>>? GetConfigProperties(OpenModUnturnedPlugin plugin);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pluginName"></param>
+        /// <returns></returns>
+        List<KeyValuePair<string, string>>? GetConfigProperties(string pluginName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> GetConfigProperties();
     }
 }

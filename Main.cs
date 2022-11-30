@@ -39,6 +39,9 @@ namespace Alpalis.UtilityServices
 
         protected override async UniTask OnLoadAsync()
         {
+            // Configuration load
+            await m_ConfigurationManager.LoadConfigAsync<Config>(this);
+
             // Plugin Load Logging
             m_Logger.LogInformation("Plugin started successfully!");
         }
