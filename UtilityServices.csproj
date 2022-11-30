@@ -6,11 +6,11 @@
 		<RootNamespace>Alpalis.UtilityServices</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateNugetPackage>true</GenerateNugetPackage>
-		<Product>Alpalis aaUtilityServices Plugin</Product>
+		<Product>Alpalis UtilityServices Plugin</Product>
 		<Authors>Pandetthe</Authors>
-		<Version>0.1.2</Version>
-		<InformationalVersion>0.1.2</InformationalVersion>
-		<PackageVersion>0.1.2</PackageVersion>
+		<Version>0.2.2</Version>
+		<InformationalVersion>0.2.2</InformationalVersion>
+		<PackageVersion>0.2.2</PackageVersion>
 		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
 	</PropertyGroup>
 

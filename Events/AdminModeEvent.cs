@@ -6,15 +6,13 @@ namespace Alpalis.UtilityServices.Events
 {
     public class AdminModeEvent : Event
     {
-        public AdminModeEvent(
-            ICommandActor actor)
+        public AdminModeEvent(ICommandActor actor)
         {
             Actor = actor;
             SteamID = null;
             IsInAdminMode = true;
         }
-        public AdminModeEvent(
-            CSteamID steamID)
+        public AdminModeEvent(CSteamID steamID)
         {
             SteamID = steamID;
             Actor = null;

@@ -18,43 +18,93 @@ namespace Alpalis.UtilityServices.API
     public interface IConfigurationManager
     {
         /// <summary>
-        /// Load plugin's config data to memory.
+        /// 
         /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T LoadConfig<T>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <returns></returns>
         T LoadConfig<T>(T config);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
         T LoadConfig<T>(OpenModUnturnedPlugin plugin);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
         T LoadConfig<T>(T config, OpenModUnturnedPlugin plugin);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
         Task<T> LoadConfigAsync<T>(OpenModUnturnedPlugin plugin);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
         Task<T> LoadConfigAsync<T>(T config, OpenModUnturnedPlugin plugin);
 
         /// <summary>
-        /// Reloads config of specified plugin.
+        /// 
         /// </summary>
-        /// <param name="pluginName">Full displayname of plugin</param>
-        /// <returns>Return if reloading of plugin's config is successful</returns>
+        /// <param name="pluginName"></param>
+        /// <returns></returns>
         bool ReloadConfig(string pluginName);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pluginName"></param>
+        /// <returns></returns>
         Task<bool> ReloadConfigAsync(string pluginName);
 
         /// <summary>
-        /// Reloads all plugin' configs.
+        /// 
         /// </summary>
-        /// <returns>List of plugins' names that configs are reloaded</returns>
+        /// <returns></returns>
         List<string> ReloadAllConfigs();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         Task<List<string>> ReloadAllConfigsAsync();
 
         /// <summary>
-        /// Returns config of specified plugin.
+        /// 
         /// </summary>
-        /// <typeparam name="T">Data class with config structure</typeparam>
-        /// <param name="plugin">Specified plugin's data</param>
-        /// <returns>Data class that extends MainConfig</returns>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         T GetConfig<T>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
+        T GetConfig<T>(OpenModUnturnedPlugin plugin);
     }
 }

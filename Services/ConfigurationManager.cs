@@ -1,4 +1,5 @@
 ﻿using Alpalis.UtilityServices.API;
+using Alpalis.UtilityServices.Events;
 using Alpalis.UtilityServices.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using MoreLinq;
 using NuGet.Protocol;
 using NuGet.Protocol.Plugins;
 using OpenMod.API;
+using OpenMod.API.Eventing;
 using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using OpenMod.API.Prioritization;
@@ -20,6 +22,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -31,6 +34,8 @@ namespace Alpalis.UtilityServices.Services
         #region Member Variables
         private readonly ILogger<ConfigurationManager> m_Logger;
         private readonly IPluginActivator m_PluginActivator;
+        private readonly IPluginAccessor<Main> m_PluginAccessor;
+        private readonly IEventBus m_EventBus; 
         private readonly IRuntime m_Runtime;
         #endregion Member Variables
 
@@ -38,19 +43,29 @@ namespace Alpalis.UtilityServices.Services
         public ConfigurationManager(
             ILogger<ConfigurationManager> logger,
             IRuntime runtime,
+            IPluginAccessor<Main> pluginAccessor,
+            IEventBus eventBus,
             IPluginActivator pluginActivator)
         {
             m_Logger = logger;
             m_PluginActivator = pluginActivator;
+            m_PluginAccessor = pluginAccessor;
+            m_EventBus = eventBus;
             Configs = new();
             m_Runtime = runtime;
         }
         #endregion Class Constructor
 
-        private Dictionary<string, MainConfig> Configs { get; set; }
+        private Dictionary<string, StoredConfig> Configs { get; set; }
 
         private OpenModUnturnedPlugin GetPluginByName(string pluginName) => (OpenModUnturnedPlugin) m_PluginActivator.ActivatedPlugins
                 .FirstOrDefault(name => name.DisplayName.Equals(pluginName, StringComparison.OrdinalIgnoreCase));
+
+        private OpenModUnturnedPlugin GetPluginBySimmilarName(string pluginName) => (OpenModUnturnedPlugin)m_PluginActivator.ActivatedPlugins
+        .FirstOrDefault(name => name.DisplayName.IndexOf(pluginName, StringComparison.OrdinalIgnoreCase) != -1);
+
+        private OpenModUnturnedPlugin GetPluginById(string pluginId) => (OpenModUnturnedPlugin) m_PluginActivator.ActivatedPlugins
+                    .FirstOrDefault(name => name.OpenModComponentId.Equals(pluginId, StringComparison.Ordinal));
 
         #region LoadConfig from Assembly
         public T LoadConfig<T>()
@@ -133,7 +148,8 @@ namespace Alpalis.UtilityServices.Services
         #region LoadConfig Internal
         private T LoadConfigInternal<T>(MainConfig config, IConfiguration configuration, string pluginId, string pluginDisplayName)
         {
-            foreach (PropertyInfo property in typeof(T).GetProperties())
+            Type type = config.GetType();
+            foreach (PropertyInfo property in type.GetProperties())
             {
                 try
                 {
@@ -146,19 +162,21 @@ namespace Alpalis.UtilityServices.Services
                 }
             }
             // Adding/updating config to dictionary Configs
-            if (Configs.ContainsKey(pluginId)) Configs[pluginId] = config;
-            else Configs.Add(pluginId, config);
+            if (Configs.ContainsKey(pluginId)) Configs[pluginId] = new StoredConfig(config, type);
+            else Configs.Add(pluginId, new StoredConfig(config, type));
             m_Logger.LogDebug(string.Format("\"{0}\" config loaded successfully!", pluginDisplayName));
             return (T)(object)config;
         }
 
         private async Task<T> LoadConfigInternalAsync<T>(MainConfig config, IConfiguration configuration, string pluginId, string pluginDisplayName)
         {
-            foreach (PropertyInfo property in typeof(T).GetProperties())
+            Type type = config.GetType();
+            foreach (PropertyInfo property in type.GetProperties())
             {
                 try
                 {
                     property.SetValue(config, configuration.GetSection(property.Name).Get(property.PropertyType));
+                    m_Logger.LogDebug("{0} {1}", property.Name, property.GetValue(config));
                 }
                 catch (Exception)
                 {
@@ -168,8 +186,8 @@ namespace Alpalis.UtilityServices.Services
             }
             // Adding/updating config to dictionary Configs
             m_Logger.LogInformation(pluginId);
-            if (Configs.ContainsKey(pluginId)) Configs[pluginId] = config;
-            else Configs.Add(pluginId, config);
+            if (Configs.ContainsKey(pluginId)) Configs[pluginId] = new StoredConfig(config, type);
+            else Configs.Add(pluginId, new StoredConfig(config, type));
             m_Logger.LogDebug(string.Format("\"{0}\" config loaded successfully!", pluginDisplayName));
             return (T)(object)config;
         }
@@ -178,21 +196,25 @@ namespace Alpalis.UtilityServices.Services
         #region ReloadConfig
         public bool ReloadConfig(string pluginName)
         {
-            OpenModUnturnedPlugin plugin = GetPluginByName(pluginName);
+            OpenModUnturnedPlugin plugin = GetPluginBySimmilarName(pluginName);
             if (plugin == null) return false;
-            MainConfig? config = Configs.FirstOrDefault(obj => obj.Key == plugin.OpenModComponentId).Value;
+            StoredConfig? config = Configs.FirstOrDefault(obj => obj.Key == plugin.OpenModComponentId).Value;
             if (config == null) return false;
-            LoadConfig(config, plugin);
+            config.Config = (MainConfig)LoadConfig(Activator.CreateInstance(config.Type), plugin);
+            ConfigReloadedEvent @event = new(plugin, config.Config);
+            m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
             return true;
         }
 
         public async Task<bool> ReloadConfigAsync(string pluginName)
         {
-            OpenModUnturnedPlugin plugin = GetPluginByName(pluginName);
+            OpenModUnturnedPlugin plugin = GetPluginBySimmilarName(pluginName);
             if (plugin == null) return false;
-            MainConfig? config = Configs.FirstOrDefault(obj => obj.Key == plugin.OpenModComponentId).Value;
+            StoredConfig? config = Configs.FirstOrDefault(obj => obj.Key == plugin.OpenModComponentId).Value;
             if (config == null) return false;
-            LoadConfigAsync(config, plugin);
+            config.Config = (MainConfig)await LoadConfigAsync(Activator.CreateInstance(config.Type), plugin);
+            ConfigReloadedEvent @event = new(plugin, config.Config);
+            m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
             return true;
         }
         #endregion ReloadConfig
@@ -202,15 +224,16 @@ namespace Alpalis.UtilityServices.Services
         {
             m_Logger.LogDebug("Reloading all plugins' configs!");
             List<string> plugins = new();
-            Dictionary<string, MainConfig> configsClone = new(Configs);
-            foreach (KeyValuePair<string, MainConfig> data in configsClone)
+            Dictionary<string, StoredConfig> configsClone = new(Configs);
+            foreach (KeyValuePair<string, StoredConfig> data in configsClone)
             {
-                OpenModUnturnedPlugin plugin = (OpenModUnturnedPlugin)m_PluginActivator.ActivatedPlugins
-                    .FirstOrDefault(name => name.OpenModComponentId.Equals(data.Key, StringComparison.Ordinal));
+                OpenModUnturnedPlugin plugin = GetPluginById(data.Key);
                 if (plugin == null) continue;
                 plugins.Add(plugin.DisplayName);
                 m_Logger.LogInformation(string.Format("Reloading \"{0}\" config!", plugin.DisplayName));
-                LoadConfig(data.Value, plugin);
+                MainConfig config = (MainConfig)LoadConfig(Activator.CreateInstance(data.Value.Type), plugin);
+                ConfigReloadedEvent @event = new(plugin, config);
+                m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
             }
             m_Logger.LogDebug("Succesfully reloaded configs!");
             return plugins;
@@ -220,14 +243,19 @@ namespace Alpalis.UtilityServices.Services
         {
             m_Logger.LogDebug("Reloading all plugins' configs!");
             List<string> plugins = new();
-            Dictionary<string, MainConfig> configsClone = new(Configs);
-            List<Task<MainConfig>> tasks = new();
-            foreach (KeyValuePair<string, MainConfig> data in configsClone)
+            Dictionary<string, StoredConfig> configsClone = new(Configs);
+            List<Task> tasks = new();
+            foreach (KeyValuePair<string, StoredConfig> data in configsClone)
             {
-                OpenModUnturnedPlugin plugin = GetPluginByName(data.Key);
+                OpenModUnturnedPlugin plugin = GetPluginById(data.Key);
+                if (plugin == null) continue;
                 plugins.Add(plugin.DisplayName);
                 m_Logger.LogInformation(string.Format("Reloading \"{0}\" config!", plugin.DisplayName));
-                tasks.Add(LoadConfigAsync(data.Value, plugin));
+                tasks.Add(new Task(async () => {
+                    MainConfig config = (MainConfig)await LoadConfigAsync(Activator.CreateInstance(data.Value.Type), plugin);
+                    ConfigReloadedEvent @event = new(plugin, config);
+                    m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
+                }));
             }
             await Task.WhenAll(tasks);
             m_Logger.LogDebug("Succesfully reloaded configs!");
@@ -243,7 +271,12 @@ namespace Alpalis.UtilityServices.Services
             var metadata = plugin.GetCustomAttribute<PluginMetadataAttribute>();
             if (metadata == null)
                 throw new Exception("Could not find plugin metadata!");
-            return (T)(object)Configs[metadata.Id];
+            return (T)(object)Configs[metadata.Id].Config; 
+        }
+
+        public T GetConfig<T>(OpenModUnturnedPlugin plugin)
+        {
+            return (T)(object)Configs[plugin.OpenModComponentId].Config;
         }
     }
 }
