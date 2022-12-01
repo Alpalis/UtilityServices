@@ -7,6 +7,14 @@ using Microsoft.Extensions.Logging;
 using OpenMod.API.Plugins;
 using OpenMod.Unturned.Plugins;
 using System;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Runtime.Remoting.Lifetime;
+using System.Threading.Tasks;
+using System.Text.Json;
+using Alpalis.UtilityServices.API.Github;
+using Semver;
 
 #region NuGet Assembly Data
 [assembly:
@@ -39,6 +47,9 @@ namespace Alpalis.UtilityServices
 
         protected override async UniTask OnLoadAsync()
         {
+            // Version check
+            await CheckGitHubNewerVersion();
+
             // Configuration load
             await m_ConfigurationManager.LoadConfigAsync<Config>(this);
 
@@ -53,6 +64,47 @@ namespace Alpalis.UtilityServices
 
             // Plugin unload logging
             m_Logger.LogInformation("Plugin disabled successfully!");
+        }
+
+        private async Task CheckGitHubNewerVersion()
+        {
+            m_Logger.LogInformation("Checking version of UtilityServices...");
+            using (HttpClient client = new())
+            {
+                client.BaseAddress = new("https://api.github.com/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.UserAgent.Add(new("UtilityServices", Version.ToString()));
+                client.DefaultRequestHeaders.Accept.Add(new("application/vnd.github+json"));
+
+                HttpResponseMessage response = await client.GetAsync("repos/Alpalis/UtilityServices/tags");
+                if (response.IsSuccessStatusCode)
+                {
+                    List<Tag>? tags = JsonSerializer.Deserialize<List<Tag>>(await response.Content.ReadAsStringAsync());
+                    if (tags == null || tags.Count == 0)
+                    {
+                        m_Logger.LogCritical("Alpalis UtilityServices plugin version check failed...");
+                        return;
+                    }
+                    Tag tag = tags[0];
+                    SemVersion githubVersion = SemVersion.FromVersion(new Version(tag.Name));
+                    int result = githubVersion.CompareByPrecedence(Version);
+                    if (result > 0)
+                    {
+                        m_Logger.LogCritical("Alpalis UtilityServices plugin is not up to date! " +
+                            "Update the plugin as soon as possible, as there may be problems in the operation of other plugins. " +
+                            "You can download the latest version here: https://github.com/Alpalis/UtilityServices/releases");
+                    }
+                    else if (result < 0)
+                    {
+                        m_Logger.LogInformation("Alpalis UtilitiServices plugin version running on this server is higher than on github! " +
+                            "You are doing a good job, keep it up man!");
+                    }
+                    else
+                    {
+                        m_Logger.LogInformation("You have the current version of the Alpalis UtilitiServices plugin!");
+                    }
+                }
+            }
         }
     }
 }
