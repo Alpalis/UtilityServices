@@ -1,5 +1,5 @@
 ﻿using Alpalis.UtilityServices.API;
-using Alpalis.UtilityServices.Events;
+using Alpalis.UtilityServices.API.Events;
 using Alpalis.UtilityServices.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +30,7 @@ using System.Xml.Linq;
 
 namespace Alpalis.UtilityServices.Services
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Normal)]
+    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Highest)]
     public class ConfigurationManager : IConfigurationManager
     {
         #region Member Variables

@@ -1,5 +1,5 @@
 ﻿using Alpalis.UtilityServices.API;
-using Alpalis.UtilityServices.Events;
+using Alpalis.UtilityServices.API.Events;
 using Microsoft.Extensions.DependencyInjection;
 using OpenMod.API.Commands;
 using OpenMod.API.Eventing;

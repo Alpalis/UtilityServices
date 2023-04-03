@@ -3,7 +3,7 @@ using OpenMod.Core.Eventing;
 using SDG.Unturned;
 using Steamworks;
 
-namespace Alpalis.UtilityServices.Events
+namespace Alpalis.UtilityServices.API.Events
 {
     public class SwitchAdminModeEvent : Event
     {

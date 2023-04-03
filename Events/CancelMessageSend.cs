@@ -1,4 +1,5 @@
 ﻿using Alpalis.UtilityServices.API.Enums;
+using Alpalis.UtilityServices.API.Events;
 using OpenMod.API.Eventing;
 using OpenMod.API.Plugins;
 using OpenMod.Core.Eventing;

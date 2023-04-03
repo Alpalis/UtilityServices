@@ -2,7 +2,7 @@
 using OpenMod.Core.Eventing;
 using Steamworks;
 
-namespace Alpalis.UtilityServices.Events
+namespace Alpalis.UtilityServices.API.Events
 {
     public class AdminModeEvent : Event
     {

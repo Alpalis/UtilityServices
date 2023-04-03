@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Alpalis.UtilityServices.API.Github;
 using Semver;
+using Alpalis.UtilityServices.Services;
 
 #region NuGet Assembly Data
 [assembly:
@@ -31,6 +32,7 @@ namespace Alpalis.UtilityServices
         private readonly ILogger<Main> m_Logger;
         private readonly IDisposable m_KeyHandlerEvent;
         private readonly IConfigurationManager m_ConfigurationManager;
+        private readonly IServiceProvider m_ServiceProvider;
         #endregion Member Variables
 
         #region Class Constructor
@@ -42,13 +44,20 @@ namespace Alpalis.UtilityServices
             m_Logger = logger;
             m_KeyHandlerEvent = ActivatorUtilities.CreateInstance<HandleKey>(serviceProvider);
             m_ConfigurationManager = configurationManager;
+            m_ServiceProvider = serviceProvider;
         }
         #endregion Class Constructor
+
+        private CustomEventsListenersActivator? CustomEventsListenersActivator;
 
         protected override async UniTask OnLoadAsync()
         {
             // Version check
             await CheckGitHubNewerVersion();
+
+            // Activate Custom Events Listeners
+            CustomEventsListenersActivator = ActivatorUtilities.CreateInstance<CustomEventsListenersActivator>(m_ServiceProvider);
+            CustomEventsListenersActivator.Activate();
 
             // Configuration load
             await m_ConfigurationManager.LoadConfigAsync<Config>(this);
@@ -59,6 +68,8 @@ namespace Alpalis.UtilityServices
 
         protected override async UniTask OnUnloadAsync()
         {
+            CustomEventsListenersActivator?.Dispose();
+
             // Event instance disposing
             m_KeyHandlerEvent.Dispose();
 
@@ -87,7 +98,7 @@ namespace Alpalis.UtilityServices
                     }
                     Tag tag = tags[0];
                     SemVersion githubVersion = SemVersion.FromVersion(new Version(tag.Name));
-                    int result = githubVersion.CompareByPrecedence(Version);
+                    int result = githubVersion.ComparePrecedenceTo(Version);
                     if (result > 0)
                     {
                         m_Logger.LogCritical("Alpalis UtilityServices plugin is not up to date! " +

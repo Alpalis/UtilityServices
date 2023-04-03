@@ -8,9 +8,9 @@
 		<GenerateNugetPackage>true</GenerateNugetPackage>
 		<Product>Alpalis UtilityServices</Product>
 		<Authors>Pandetthe</Authors>
-		<Version>0.3.3</Version>
-		<InformationalVersion>0.3.3</InformationalVersion>
-		<PackageVersion>0.3.3</PackageVersion>
+		<Version>0.4.0</Version>
+		<InformationalVersion>0.4.0</InformationalVersion>
+		<PackageVersion>0.4.4</PackageVersion>
 		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
 	</PropertyGroup>
 

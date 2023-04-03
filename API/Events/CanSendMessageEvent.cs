@@ -2,7 +2,7 @@
 using OpenMod.Core.Eventing;
 using OpenMod.Unturned.Players;
 
-namespace Alpalis.UtilityServices.Events
+namespace Alpalis.UtilityServices.API.Events
 {
     public class CanSendMessageEvent : Event
     {
