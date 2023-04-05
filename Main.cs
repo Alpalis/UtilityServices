@@ -107,12 +107,12 @@ namespace Alpalis.UtilityServices
                     }
                     else if (result < 0)
                     {
-                        m_Logger.LogInformation("Alpalis UtilitiServices plugin version running on this server is higher than on github! " +
+                        m_Logger.LogInformation("Alpalis UtilityServices plugin version running on this server is higher than on github! " +
                             "You are doing a good job, keep it up man!");
                     }
                     else
                     {
-                        m_Logger.LogInformation("You have the current version of the Alpalis UtilitiServices plugin!");
+                        m_Logger.LogInformation("You have the current version of the Alpalis UtilityServices plugin!");
                     }
                 }
             }
