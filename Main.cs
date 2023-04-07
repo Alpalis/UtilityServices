@@ -8,21 +8,17 @@ using OpenMod.API.Plugins;
 using OpenMod.Unturned.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Runtime.Remoting.Lifetime;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Alpalis.UtilityServices.API.Github;
 using Semver;
 using Alpalis.UtilityServices.Services;
 
-#region NuGet Assembly Data
 [assembly:
     PluginMetadata("Alpalis.UtilityServices", Author = "Pandetthe",
         DisplayName = "Alpalis UtilityServices",
-        Website = "https://alpalis.eu")]
-#endregion Nuget Assembly Data
+        Website = "https://alpalis.github.io/docs/")]
 
 namespace Alpalis.UtilityServices
 {

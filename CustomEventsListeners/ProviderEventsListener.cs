@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SDG.Unturned;
 using Steamworks;
 using System;
-using System.Drawing;
 
 namespace Alpalis.UtilityServices.EventsListeners
 {
@@ -25,25 +24,26 @@ namespace Alpalis.UtilityServices.EventsListeners
              * onBanPlayerRequestedV2 - UnturnedPlayerBanningEvent
              * onCheckBanStatusWithHWID - UnturnedPlayerCheckingBanEvent
              * onUnbanPlayerRequested - UnturnedPlayerUnbanningEvent, UnturnedPlayerUnbannedEvent
-             * onClientConnected - UnturnedPlayerConnectedEvent
-             * onClientDisconnected - UnturnedPlayerDisconnectedEvent
+             * onServerConnected - UnturnedPlayerConnectedEvent
+             * onServerDisconnected - UnturnedPlayerDisconnectedEvent
              * onCommenceShutdown  - UnturnedShutdownCommencedEvent
+             * 
+             * NOT TO PLUGIN USAGE / NOT WORKING
+             * onQueuePositionUpdated - client side
+             * onEnemyConnected
+             * onEnemyDisconnected
+             * onClientConnected - client side
+             * onClientDisconnected - client side
              * 
              * UNKNOWN
              * onBackendRealtimeAvailable
-             * onEnemyConnected
-             * onEnemyDisconnected
              * onLoginSpawning
-             * onServerConnected
-             * onServerDisconnected
              * onServerShutdown
-             * onUnbanPlayerRequested
              */
 
             Provider.onRejectingPlayer += OnRejectingPlayer;
             Provider.onBattlEyeKick += OnBattlEyeKick;
             Provider.onServerHosted += OnServerHosted;
-            Provider.onQueuePositionUpdated += OnQueuePositionUpdated;
             Provider.onCheckValidWithExplanation += OnCheckValidWithExplanation;
         }
         private void OnRejectingPlayer(CSteamID steamID, ESteamRejection rejection, string explanation)
@@ -64,12 +64,6 @@ namespace Alpalis.UtilityServices.EventsListeners
             Emit(@event);
         }
 
-        private void OnQueuePositionUpdated()
-        {
-            // WIP - to test
-            //_logger.LogInformation("updated");
-        }
-
         private void OnCheckValidWithExplanation(ValidateAuthTicketResponse_t callback, ref bool isValid, ref string explanation)
         {
             CheckValidWithExplanationEvent @event = new(callback, isValid, explanation);
@@ -80,7 +74,9 @@ namespace Alpalis.UtilityServices.EventsListeners
 
         public override void Unsubscribe()
         {
-            Provider.onQueuePositionUpdated -= OnQueuePositionUpdated;
+            Provider.onRejectingPlayer -= OnRejectingPlayer;
+            Provider.onBattlEyeKick -= OnBattlEyeKick;
+            Provider.onServerHosted -= OnServerHosted;
             Provider.onCheckValidWithExplanation -= OnCheckValidWithExplanation;
         }
     }

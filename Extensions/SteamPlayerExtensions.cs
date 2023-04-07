@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Alpalis.UtilityServices.Extensions
 {
-    public class SteamPlayerExtenstions
+    public class SteamPlayerExtensions
     {
     }
 }
