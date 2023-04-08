@@ -101,8 +101,14 @@ namespace Alpalis.UtilityServices.Services
             }
             catch (Exception)
             {
-                m_Logger.LogDebug(string.Format("Problem occured on loading config of \"{0}\" plugin!", plugin.DisplayName));
+                m_Logger.LogInformation(string.Format("Problem occured on loading config of \"{0}\" plugin!", plugin.DisplayName));
             }
+            if (!config.IsValid(out List<string> errors))
+            {
+                foreach (string error in errors)
+                    m_Logger.LogWarning(error);
+            }
+
             // Adding/updating config to dictionary Configs
             if (Configs.ContainsKey(plugin.OpenModComponentId))
             {
@@ -119,7 +125,7 @@ namespace Alpalis.UtilityServices.Services
                     }));
                 Configs.Add(plugin.OpenModComponentId, newStoredConfig);
             }
-            m_Logger.LogDebug(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
+            m_Logger.LogInformation(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
             return (T)(object)config;
         }
 
@@ -131,7 +137,12 @@ namespace Alpalis.UtilityServices.Services
                 plugin.Configuration.Bind(config);
             } catch (Exception)
             {
-                m_Logger.LogDebug(string.Format("Problem occured on loading config of \"{0}\" plugin!", plugin.DisplayName));
+                m_Logger.LogWarning(string.Format("Problem occured on loading config of \"{0}\" plugin!", plugin.DisplayName));
+            }
+            if (!config.IsValid(out List<string> errors))
+            {
+                foreach (string error in errors)
+                    m_Logger.LogWarning(error);
             }
             // Adding/updating config to dictionary Configs
             if (Configs.ContainsKey(plugin.OpenModComponentId))
@@ -149,7 +160,7 @@ namespace Alpalis.UtilityServices.Services
                     }));
                 Configs.Add(plugin.OpenModComponentId, newStoredConfig);
             }
-            m_Logger.LogDebug(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
+            m_Logger.LogInformation(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
             return (T)(object)config;
         }
         #endregion LoadConfig Internal
