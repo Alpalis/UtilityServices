@@ -12,12 +12,9 @@ namespace Alpalis.UtilityServices.Services
     [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
     public class AdminManagerImplementation : IAdminManagerImplementation
     {
-        #region Member Variables
         private readonly IEventBus m_EventBus;
         private readonly Main m_Plugin;
-        #endregion Member Variables
 
-        #region Class Constructor
         public AdminManagerImplementation(
             IEventBus eventBus,
             IPluginAccessor<Main> plugin)
@@ -25,7 +22,6 @@ namespace Alpalis.UtilityServices.Services
             m_EventBus = eventBus;
             m_Plugin = plugin.Instance!;
         }
-        #endregion Class Constructor
 
         public bool IsInAdminMode(CSteamID steamID)
         {
