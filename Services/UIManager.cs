@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// to rework and implement openmod IUnturnedUIEffectsKeysProvider
+
 namespace Alpalis.UtilityServices.Services
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.High)]

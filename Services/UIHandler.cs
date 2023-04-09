@@ -6,21 +6,20 @@ using Steamworks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+// to rework and implement openmod IUnturnedUIEffectsKeysProvider
+
 namespace Alpalis.UtilityServices.Services
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Normal)]
     public class UIHandler : IUIHandler
     {
-        #region Class Constructor
         public UIHandler()
         {
             TextValues = new Dictionary<string, Dictionary<string, string>>();
         }
-        #endregion Class Constructor
 
         private Dictionary<string, Dictionary<string, string>> TextValues { get; set; }
 
-        #region ClearText
         public async Task ClearText(CSteamID steamID)
         {
             TextValues.Remove(steamID.ToString());
@@ -45,7 +44,6 @@ namespace Alpalis.UtilityServices.Services
             }
             return;
         }
-        #endregion ClearText
 
         public async Task SetText(CSteamID steamID, string inputName, string text)
         {

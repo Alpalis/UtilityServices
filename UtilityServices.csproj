@@ -28,4 +28,8 @@
 	<ItemGroup>
 	  <PackageReference Update="OpenMod.Unturned" Version="3.3.10" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Patches\" />
+	</ItemGroup>
 </Project>
