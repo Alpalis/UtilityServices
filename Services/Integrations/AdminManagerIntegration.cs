@@ -7,31 +7,34 @@ using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using Steamworks;
 
-namespace Alpalis.UtilityServices.Services
+namespace Alpalis.UtilityServices.Services.Integrations
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
-    public class IdentityManagerImplementation : IIdentityManagerImplementation
+    public class AdminManagerImplementation : IAdminManagerImplementation
     {
-        #region Member Variables
         private readonly IEventBus m_EventBus;
         private readonly Main m_Plugin;
-        #endregion Member Variables
 
-        #region Class Constructor
-        public IdentityManagerImplementation(
+        public AdminManagerImplementation(
             IEventBus eventBus,
             IPluginAccessor<Main> plugin)
         {
             m_EventBus = eventBus;
             m_Plugin = plugin.Instance!;
         }
-        #endregion Class Constructor
 
-        public ushort? GetIdentity(CSteamID steamID)
+        public bool IsInAdminMode(CSteamID steamID)
         {
-            GetIdentityEvent @event = new(steamID);
+            AdminModeEvent @event = new(steamID);
             m_EventBus.EmitAsync(m_Plugin, this, @event);
-            return @event.Identity;
+            return @event.IsInAdminMode;
+        }
+
+        public bool IsInAdminMode(ICommandActor actor)
+        {
+            AdminModeEvent @event = new(actor);
+            m_EventBus.EmitAsync(m_Plugin, this, @event);
+            return @event.IsInAdminMode;
         }
     }
 }

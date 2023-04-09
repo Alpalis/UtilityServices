@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Alpalis.UtilityServices.API.Github;
 using Semver;
-using Alpalis.UtilityServices.Services;
+using Alpalis.UtilityServices.CustomEventsListeners;
 
 [assembly:
     PluginMetadata("Alpalis.UtilityServices", Author = "Pandetthe",

@@ -1,19 +1,17 @@
 ﻿using Alpalis.UtilityServices.API.CustomEventsListeners;
 using Autofac;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenMod.API.Ioc;
-using OpenMod.API.Prioritization;
 using OpenMod.Common.Helpers;
 using OpenMod.Core.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Alpalis.UtilityServices.Services
+namespace Alpalis.UtilityServices.CustomEventsListeners
 {
+    /// <summary>
+    /// Events testing before adding to openmod
+    /// </summary>
     internal class CustomEventsListenersActivator : IDisposable
     {
         private readonly ILifetimeScope m_LifetimeScope;

@@ -6,41 +6,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using MoreLinq;
-using NuGet.Protocol;
-using NuGet.Protocol.Plugins;
-using OpenMod.API;
 using OpenMod.API.Eventing;
 using OpenMod.API.Ioc;
 using OpenMod.API.Plugins;
 using OpenMod.API.Prioritization;
-using OpenMod.Core.Helpers;
-using OpenMod.Core.Plugins;
 using OpenMod.Unturned.Plugins;
-using SDG.Unturned;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Alpalis.UtilityServices.Services
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Highest)]
     public class ConfigurationManager : IConfigurationManager
     {
-        #region Member Variables
         private readonly ILogger<ConfigurationManager> m_Logger;
         private readonly IPluginActivator m_PluginActivator;
         private readonly IPluginAccessor<Main> m_PluginAccessor;
         private readonly IEventBus m_EventBus;
-        #endregion Member Variables
 
-        #region Class Constructor
         public ConfigurationManager(
             ILogger<ConfigurationManager> logger,
             IPluginAccessor<Main> pluginAccessor,
@@ -53,7 +38,6 @@ namespace Alpalis.UtilityServices.Services
             m_EventBus = eventBus;
             Configs = new();
         }
-        #endregion Class Constructor
 
         private Dictionary<string, StoredConfig> Configs { get; set; }
 
@@ -135,7 +119,8 @@ namespace Alpalis.UtilityServices.Services
             try
             {
                 plugin.Configuration.Bind(config);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 m_Logger.LogWarning(string.Format("Problem occured on loading config of \"{0}\" plugin!", plugin.DisplayName));
             }
@@ -258,8 +243,7 @@ namespace Alpalis.UtilityServices.Services
         public List<KeyValuePair<string, string>>? GetConfigProperties(string pluginName)
         {
             OpenModUnturnedPlugin? plugin = m_PluginActivator.GetPluginBySimmilarName(pluginName);
-            if (plugin == null) return null;
-            return Configs[plugin.OpenModComponentId].Config.GetPropertiesInString();
+            return plugin == null ? null : Configs[plugin.OpenModComponentId].Config.GetPropertiesInString();
         }
         public Dictionary<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> GetConfigProperties()
         {
