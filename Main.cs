@@ -62,40 +62,38 @@ namespace Alpalis.UtilityServices
         private async Task CheckGitHubNewerVersion()
         {
             m_Logger.LogInformation("Checking version of UtilityServices...");
-            using (HttpClient client = new())
-            {
-                client.BaseAddress = new("https://api.github.com/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.UserAgent.Add(new("UtilityServices", Version.ToString()));
-                client.DefaultRequestHeaders.Accept.Add(new("application/vnd.github+json"));
+            using HttpClient client = new();
+            client.BaseAddress = new("https://api.github.com/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.UserAgent.Add(new("UtilityServices", Version.ToString()));
+            client.DefaultRequestHeaders.Accept.Add(new("application/vnd.github+json"));
 
-                HttpResponseMessage response = await client.GetAsync("repos/Alpalis/UtilityServices/tags");
-                if (response.IsSuccessStatusCode)
+            HttpResponseMessage response = await client.GetAsync("repos/Alpalis/UtilityServices/tags");
+            if (response.IsSuccessStatusCode)
+            {
+                List<Tag>? tags = JsonSerializer.Deserialize<List<Tag>>(await response.Content.ReadAsStringAsync());
+                if (tags == null || tags.Count == 0)
                 {
-                    List<Tag>? tags = JsonSerializer.Deserialize<List<Tag>>(await response.Content.ReadAsStringAsync());
-                    if (tags == null || tags.Count == 0)
-                    {
-                        m_Logger.LogCritical("Alpalis UtilityServices plugin version check failed...");
-                        return;
-                    }
-                    Tag tag = tags[0];
-                    SemVersion githubVersion = SemVersion.FromVersion(new Version(tag.Name));
-                    int result = githubVersion.ComparePrecedenceTo(Version);
-                    if (result > 0)
-                    {
-                        m_Logger.LogCritical("Alpalis UtilityServices plugin is not up to date! " +
-                            "Update the plugin as soon as possible, as there may be problems in the operation of other plugins. " +
-                            "You can download the latest version here: https://github.com/Alpalis/UtilityServices/releases");
-                    }
-                    else if (result < 0)
-                    {
-                        m_Logger.LogInformation("Alpalis UtilityServices plugin version running on this server is higher than on github! " +
-                            "You are doing a good job, keep it up man!");
-                    }
-                    else
-                    {
-                        m_Logger.LogInformation("You have the current version of the Alpalis UtilityServices plugin!");
-                    }
+                    m_Logger.LogCritical("Alpalis UtilityServices plugin version check failed...");
+                    return;
+                }
+                Tag tag = tags[0];
+                SemVersion githubVersion = SemVersion.FromVersion(new Version(tag.Name));
+                int result = githubVersion.ComparePrecedenceTo(Version);
+                if (result > 0)
+                {
+                    m_Logger.LogCritical("Alpalis UtilityServices plugin is not up to date! " +
+                        "Update the plugin as soon as possible, as there may be problems in the operation of other plugins. " +
+                        "You can download the latest version here: https://github.com/Alpalis/UtilityServices/releases");
+                }
+                else if (result < 0)
+                {
+                    m_Logger.LogInformation("Alpalis UtilityServices plugin version running on this server is higher than on github! " +
+                        "You are doing a good job, keep it up man!");
+                }
+                else
+                {
+                    m_Logger.LogInformation("You have the current version of the Alpalis UtilityServices plugin!");
                 }
             }
         }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using OpenMod.API.Ioc;
 using OpenMod.API.Prioritization;
 using OpenMod.Core.Helpers;
+using OpenMod.Unturned.Effects;
 using SDG.Unturned;
 using Steamworks;
 using System;
@@ -13,33 +14,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// to rework and implement openmod IUnturnedUIEffectsKeysProvider
-
 namespace Alpalis.UtilityServices.Services
 {
-    [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.High)]
+    /*[ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Normal)]
     public class UIManager : IUIManager
     {
-        #region Member Variables
         private readonly ILogger<UIManager> m_Logger;
-        #endregion Member Variables
+        private readonly IUnturnedUIEffectsKeysProvider m_UnturnedUIEffectsKeysProvider;
 
-        #region Class Constructor
         public UIManager(
-            ILogger<UIManager> logger)
+            ILogger<UIManager> logger,
+            IUnturnedUIEffectsKeysProvider unturnedUIEffectsKeysProvider)
         {
-            EnabledUIs = new();
-            EnabledWarnings = new();
-            EnabledErrors = new();
             m_Logger = logger;
+            m_UnturnedUIEffectsKeysProvider = unturnedUIEffectsKeysProvider;
         }
-        #endregion Class Constructor
 
-        private Dictionary<ulong, List<EnabledUI>> EnabledUIs { get; set; }
+        public async UniTask RunMainUI()
+        {
+        }
 
-        private Dictionary<ulong, List<string>> EnabledWarnings { get; set; }
-
-        private HashSet<ulong> EnabledErrors { get; set; }
 
         public async UniTask RunMainUI(SteamPlayer sPlayer, ushort ID, short key)
         {
@@ -321,5 +315,5 @@ namespace Alpalis.UtilityServices.Services
                 return;
             EnabledUIs.Remove(steamID.m_SteamID);
         }
-    }
+    }*/
 }

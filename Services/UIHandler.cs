@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenMod.API.Ioc;
 using OpenMod.API.Prioritization;
+using SDG.Unturned;
 using Steamworks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
