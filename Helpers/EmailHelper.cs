@@ -2,8 +2,16 @@
 
 namespace Alpalis.UtilityServices.Helpers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class EmailHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public static bool IsValidEmail(string email)
         {
             string? trimmedEmail = email.Trim();

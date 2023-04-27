@@ -6,12 +6,18 @@ namespace Alpalis.UtilityServices.Helpers
     /// <summary>
     /// A helper useful for finding game assets
     /// </summary>
-    /// <remarks><see
-    /// href="https://github.com/Kr4ken-9/NewEssentials/blob/master/NewEssentials/Helpers/UnturnedAssetHelper.cs">
+    /// <remarks>
+    /// <see href="https://github.com/Kr4ken-9/NewEssentials/blob/master/NewEssentials/Helpers/UnturnedAssetHelper.cs">
     /// Source code
     /// </see></remarks>
     public static class UnturnedAssetHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public static bool GetItem(string searchTerm, out ItemAsset item)
         {
             if (string.IsNullOrEmpty(searchTerm.Trim()))
@@ -33,6 +39,12 @@ namespace Alpalis.UtilityServices.Helpers
             return item != null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="vehicle"></param>
+        /// <returns></returns>
         public static bool GetVehicle(string searchTerm, out VehicleAsset vehicle)
         {
             if (string.IsNullOrEmpty(searchTerm.Trim()))

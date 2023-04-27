@@ -26,7 +26,7 @@
 	<Import Project="..\shared.csproj" Condition="Exists('..\shared.csproj')" />
 
 	<ItemGroup>
-	  <PackageReference Update="OpenMod.Unturned" Version="3.3.13" />
+	  <PackageReference Update="OpenMod.Unturned" Version="3.3.14" />
 	</ItemGroup>
 
 	<ItemGroup>
