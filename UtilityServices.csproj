@@ -8,9 +8,9 @@
 		<GenerateNugetPackage>true</GenerateNugetPackage>
 		<Product>Alpalis UtilityServices</Product>
 		<Authors>Pandetthe</Authors>
-		<Version>1.1.1</Version>
-		<InformationalVersion>1.1.1</InformationalVersion>
-		<PackageVersion>1.1.1</PackageVersion>
+		<Version>1.1.2</Version>
+		<InformationalVersion>1.1.2</InformationalVersion>
+		<PackageVersion>1.1.2</PackageVersion>
 		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
 	</PropertyGroup>
 
@@ -26,7 +26,7 @@
 	<Import Project="..\shared.csproj" Condition="Exists('..\shared.csproj')" />
 
 	<ItemGroup>
-	  <PackageReference Update="OpenMod.Unturned" Version="3.3.14" />
+	  <PackageReference Update="OpenMod.Unturned" Version="3.7.4" />
 	</ItemGroup>
 
 	<ItemGroup>
