@@ -10,18 +10,12 @@ using Steamworks;
 namespace Alpalis.UtilityServices.Services.Integrations
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Transient)]
-    public class AdminManagerImplementation : IAdminManagerImplementation
+    public class AdminManagerImplementation(
+        IEventBus eventBus,
+        IPluginAccessor<Main> plugin) : IAdminManagerImplementation
     {
-        private readonly IEventBus m_EventBus;
-        private readonly Main m_Plugin;
-
-        public AdminManagerImplementation(
-            IEventBus eventBus,
-            IPluginAccessor<Main> plugin)
-        {
-            m_EventBus = eventBus;
-            m_Plugin = plugin.Instance!;
-        }
+        private readonly IEventBus m_EventBus = eventBus;
+        private readonly Main m_Plugin = plugin.Instance!;
 
         public bool IsInAdminMode(CSteamID steamID)
         {

@@ -19,27 +19,18 @@ using System.Threading.Tasks;
 namespace Alpalis.UtilityServices.Services
 {
     [ServiceImplementation(Lifetime = ServiceLifetime.Singleton, Priority = Priority.Highest)]
-    public class ConfigurationManager : IConfigurationManager
+    public class ConfigurationManager(
+        ILogger<ConfigurationManager> logger,
+        IPluginAccessor<Main> pluginAccessor,
+        IEventBus eventBus,
+        IPluginActivator pluginActivator) : API.IConfigurationManager
     {
-        private readonly ILogger<ConfigurationManager> m_Logger;
-        private readonly IPluginActivator m_PluginActivator;
-        private readonly IPluginAccessor<Main> m_PluginAccessor;
-        private readonly IEventBus m_EventBus;
+        private readonly ILogger<ConfigurationManager> m_Logger = logger;
+        private readonly IPluginActivator m_PluginActivator = pluginActivator;
+        private readonly IPluginAccessor<Main> m_PluginAccessor = pluginAccessor;
+        private readonly IEventBus m_EventBus = eventBus;
 
-        public ConfigurationManager(
-            ILogger<ConfigurationManager> logger,
-            IPluginAccessor<Main> pluginAccessor,
-            IEventBus eventBus,
-            IPluginActivator pluginActivator)
-        {
-            m_Logger = logger;
-            m_PluginActivator = pluginActivator;
-            m_PluginAccessor = pluginAccessor;
-            m_EventBus = eventBus;
-            Configs = new();
-        }
-
-        private Dictionary<string, StoredConfig> Configs { get; set; }
+        private Dictionary<string, StoredConfig> Configs { get; set; } = [];
 
         #region LoadConfig from OpenModUnturnedPlugin
         public T LoadConfig<T>(OpenModUnturnedPlugin plugin)
@@ -101,7 +92,7 @@ namespace Alpalis.UtilityServices.Services
             }
             else
             {
-                StoredConfig newStoredConfig = new StoredConfig(config, type,
+                StoredConfig newStoredConfig = new(config, type,
                     ChangeToken.OnChange(() => plugin.Configuration.GetReloadToken(), () =>
                     {
                         if (!GetConfig<Config>(m_PluginAccessor.Instance!).AutomaticConfigReload) return;
@@ -113,7 +104,7 @@ namespace Alpalis.UtilityServices.Services
             return (T)(object)config;
         }
 
-        private async Task<T> LoadConfigInternalAsync<T>(MainConfig config, OpenModUnturnedPlugin plugin)
+        private Task<T> LoadConfigInternalAsync<T>(MainConfig config, OpenModUnturnedPlugin plugin)
         {
             Type type = config.GetType();
             try
@@ -137,7 +128,7 @@ namespace Alpalis.UtilityServices.Services
             }
             else
             {
-                StoredConfig newStoredConfig = new StoredConfig(config, type,
+                StoredConfig newStoredConfig = new(config, type,
                     ChangeToken.OnChange(() => plugin.Configuration.GetReloadToken(), async () =>
                     {
                         if (!GetConfig<Config>(m_PluginAccessor.Instance!).AutomaticConfigReload) return;
@@ -146,7 +137,7 @@ namespace Alpalis.UtilityServices.Services
                 Configs.Add(plugin.OpenModComponentId, newStoredConfig);
             }
             m_Logger.LogInformation(string.Format("\"{0}\" config loaded successfully!", plugin.DisplayName));
-            return (T)(object)config;
+            return Task.FromResult((T)(object)config);
         }
         #endregion LoadConfig Internal
 
@@ -171,7 +162,7 @@ namespace Alpalis.UtilityServices.Services
             if (config == null) return false;
             config.Config = (MainConfig)await LoadConfigAsync(Activator.CreateInstance(config.Type), plugin);
             ConfigReloadedEvent @event = new(plugin, config.Config);
-            m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
+            await m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event).ConfigureAwait(false);
             return true;
         }
 
@@ -187,7 +178,7 @@ namespace Alpalis.UtilityServices.Services
         {
             MainConfig config = (MainConfig)await LoadConfigAsync(Activator.CreateInstance(configType), plugin);
             ConfigReloadedEvent @event = new(plugin, config);
-            m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event);
+            await m_EventBus.EmitAsync(m_PluginAccessor.Instance!, this, @event).ConfigureAwait(false);
             return config;
         }
         #endregion ReloadConfig
@@ -196,7 +187,7 @@ namespace Alpalis.UtilityServices.Services
         public List<string> ReloadAllConfigs()
         {
             m_Logger.LogDebug("Reloading all plugins' configs!");
-            List<string> plugins = new();
+            List<string> plugins = [];
             Dictionary<string, StoredConfig> configsClone = new(Configs);
             foreach (KeyValuePair<string, StoredConfig> data in configsClone)
             {
@@ -213,9 +204,9 @@ namespace Alpalis.UtilityServices.Services
         public async Task<List<string>> ReloadAllConfigsAsync()
         {
             m_Logger.LogDebug("Reloading all plugins' configs!");
-            List<string> plugins = new();
+            List<string> plugins = [];
             Dictionary<string, StoredConfig> configsClone = new(Configs);
-            List<Task<MainConfig>> tasks = new();
+            List<Task<MainConfig>> tasks = [];
             foreach (KeyValuePair<string, StoredConfig> data in configsClone)
             {
                 OpenModUnturnedPlugin? plugin = m_PluginActivator.GetPluginById(data.Key);
@@ -247,7 +238,7 @@ namespace Alpalis.UtilityServices.Services
         }
         public Dictionary<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> GetConfigProperties()
         {
-            Dictionary<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> configs = new();
+            Dictionary<OpenModUnturnedPlugin, List<KeyValuePair<string, string>>> configs = [];
             Dictionary<string, StoredConfig> configsClone = new(Configs);
             foreach (KeyValuePair<string, StoredConfig> data in configsClone)
             {

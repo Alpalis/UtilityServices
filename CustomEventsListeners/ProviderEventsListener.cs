@@ -8,14 +8,9 @@ using System;
 
 namespace Alpalis.UtilityServices.EventsListeners
 {
-    internal class ProviderEventsListener : CustomEventsListener
+    internal class ProviderEventsListener(IServiceProvider serviceProvider) : CustomEventsListener(serviceProvider)
     {
-        private readonly ILogger<ProviderEventsListener> _logger;
-
-        public ProviderEventsListener(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-            _logger = serviceProvider.GetRequiredService<ILogger<ProviderEventsListener>>();
-        }
+        private readonly ILogger<ProviderEventsListener> _logger = serviceProvider.GetRequiredService<ILogger<ProviderEventsListener>>();
 
         public override void Subscribe()
         {

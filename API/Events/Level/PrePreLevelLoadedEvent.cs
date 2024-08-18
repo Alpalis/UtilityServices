@@ -2,13 +2,8 @@
 
 namespace Alpalis.UtilityServices.API.Events.Level
 {
-    public class PrePreLevelLoadedEvent : Event
+    public class PrePreLevelLoadedEvent(int level) : Event
     {
-        public int Level { get; set; }
-
-        public PrePreLevelLoadedEvent(int level)
-        {
-            Level = level;
-        }
+        public int Level { get; } = level;
     }
 }

@@ -16,18 +16,18 @@ namespace Alpalis.UtilityServices.Services
     {
         public UIHandler()
         {
-            TextValues = new Dictionary<string, Dictionary<string, string>>();
+            TextValues = [];
         }
 
         private Dictionary<string, Dictionary<string, string>> TextValues { get; set; }
 
-        public async Task ClearText(CSteamID steamID)
+        public Task ClearText(CSteamID steamID)
         {
             TextValues.Remove(steamID.ToString());
-            return;
+            return Task.CompletedTask;
         }
 
-        public async Task ClearText(CSteamID steamID, string inputName)
+        public Task ClearText(CSteamID steamID, string inputName)
         {
             if (TextValues.ContainsKey(steamID.ToString()))
             {
@@ -36,30 +36,28 @@ namespace Alpalis.UtilityServices.Services
                     if (TextValues[steamID.ToString()].Keys.Count <= 1)
                     {
                         TextValues.Remove(steamID.ToString());
-                        return;
+                        return Task.CompletedTask;
                     }
                     TextValues[steamID.ToString()].Remove(inputName);
-                    return;
                 }
-                return;
             }
-            return;
+            return Task.CompletedTask;
         }
 
-        public async Task SetText(CSteamID steamID, string inputName, string text)
+        public Task SetText(CSteamID steamID, string inputName, string text)
         {
             if (TextValues.ContainsKey(steamID.ToString()))
             {
                 if (TextValues[steamID.ToString()].ContainsKey(inputName))
                 {
                     TextValues[steamID.ToString()][inputName] = text;
-                    return;
+                    return Task.CompletedTask;
                 }
                 TextValues[steamID.ToString()].Add(inputName, text);
-                return;
+                return Task.CompletedTask;
             }
             TextValues.Add(steamID.ToString(), new Dictionary<string, string> { { inputName, text } });
-            return;
+            return Task.CompletedTask;
         }
 
         public bool IsTextSet(CSteamID steamID, string inputName)

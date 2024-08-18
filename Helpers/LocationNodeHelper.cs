@@ -1,4 +1,6 @@
-﻿using SDG.Unturned;
+﻿using SDG.Framework.Devkit;
+using SDG.Unturned;
+using System;
 using System.Linq;
 
 namespace Alpalis.UtilityServices.Helpers
@@ -13,15 +15,10 @@ namespace Alpalis.UtilityServices.Helpers
         /// </summary>
         /// <param name="place"></param>
         /// <returns></returns>
-        public static LocationNode GetLocationNode(string place)
+        public static LocationDevkitNode? GetLocationNode(string place)
         {
-            return (
-                from node in LevelNodes.nodes
-                where node.type == ENodeType.LOCATION
-                let locNode = node as LocationNode
-                where locNode.name.ToLower().Contains(place.ToLower())
-                select locNode
-            ).FirstOrDefault();
+            return (LocationDevkitNode)LevelHierarchy.instance.items.Where(i => i is LocationDevkitNode location &&
+                location.name.Contains(place, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         /// <summary>
@@ -30,7 +27,7 @@ namespace Alpalis.UtilityServices.Helpers
         /// <param name="place"></param>
         /// <param name="locationNode"></param>
         /// <returns></returns>
-        public static bool TryGetLocationNode(string place, out LocationNode locationNode)
+        public static bool TryGetLocationNode(string place, out LocationDevkitNode? locationNode)
         {
             locationNode = GetLocationNode(place);
             return locationNode != null;

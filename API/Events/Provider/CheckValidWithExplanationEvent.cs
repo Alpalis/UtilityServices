@@ -1,26 +1,14 @@
 ﻿using OpenMod.Core.Eventing;
 using Steamworks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Alpalis.UtilityServices.API.Events.Provider
 {
-    public class CheckValidWithExplanationEvent : Event
+    public class CheckValidWithExplanationEvent(ValidateAuthTicketResponse_t callback, bool isValid, string explanation) : Event
     {
-        public ValidateAuthTicketResponse_t Callback { get; set; }
+        public ValidateAuthTicketResponse_t Callback { get; } = callback;
 
-        public bool IsValid { get; set; }
+        public bool IsValid { get; } = isValid;
 
-        public string Explanation { get; set; } = null!;
-
-        public CheckValidWithExplanationEvent(ValidateAuthTicketResponse_t callback, bool isValid, string explanation)
-        {
-            Callback = callback;
-            IsValid = isValid;
-            Explanation = explanation;
-        }
+        public string Explanation { get; } = explanation;
     }
 }

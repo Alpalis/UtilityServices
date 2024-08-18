@@ -1,21 +1,13 @@
 ﻿using Alpalis.UtilityServices.Models;
-using OpenMod.API.Commands;
 using OpenMod.Core.Eventing;
 using OpenMod.Unturned.Plugins;
-using Steamworks;
 
 namespace Alpalis.UtilityServices.API.Events
 {
-    public class ConfigReloadedEvent : Event
+    public class ConfigReloadedEvent(OpenModUnturnedPlugin plugin, MainConfig config) : Event
     {
-        public ConfigReloadedEvent(OpenModUnturnedPlugin plugin, MainConfig config)
-        {
-            Plugin = plugin;
-            Config = config;
-        }
+        public OpenModUnturnedPlugin Plugin { get; } = plugin;
 
-        public OpenModUnturnedPlugin Plugin { get; }
-
-        public MainConfig Config { get; set; }
+        public MainConfig Config { get; internal set; } = config;
     }
 }

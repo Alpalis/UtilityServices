@@ -4,22 +4,14 @@ using OpenMod.Unturned.Players;
 
 namespace Alpalis.UtilityServices.API.Events
 {
-    public class CanSendMessageEvent : Event
+    public class CanSendMessageEvent(UnturnedPlayer player) : Event
     {
-        public CanSendMessageEvent(UnturnedPlayer player)
-        {
-            Player = player;
-            Reason = null;
-            IsCancelled = false;
-            Message = null;
-        }
+        public UnturnedPlayer Player { get; set; } = player;
 
-        public UnturnedPlayer Player { get; set; }
+        public string? Message { get; set; } = null;
 
-        public string? Message { get; set; }
+        public ECancelMessageReason? Reason { get; set; } = null;
 
-        public ECancelMessageReason? Reason { get; set; }
-
-        public bool IsCancelled { get; set; }
+        public bool IsCancelled { get; set; } = false;
     }
 }

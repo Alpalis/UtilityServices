@@ -1,4 +1,5 @@
 ﻿using SDG.Unturned;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Alpalis.UtilityServices.Helpers
@@ -28,13 +29,14 @@ namespace Alpalis.UtilityServices.Helpers
 
             if (!ushort.TryParse(searchTerm, out ushort id))
             {
-                item = Assets.find(EAssetType.ITEM).Cast<ItemAsset>().Where(i => !string.IsNullOrEmpty(i.itemName))
+                List<ItemAsset> items = [];
+                Assets.find(items);
+                item = items.Where(i => !string.IsNullOrEmpty(i.itemName))
                     .OrderBy(i => i.itemName.Length).FirstOrDefault(i =>
                         i.itemName.ToUpperInvariant().Contains(searchTerm.ToUpperInvariant()));
 
                 return item != null;
             }
-
             item = (ItemAsset)Assets.find(EAssetType.ITEM, id);
             return item != null;
         }
@@ -55,9 +57,11 @@ namespace Alpalis.UtilityServices.Helpers
 
             if (!ushort.TryParse(searchTerm, out ushort id))
             {
-                vehicle = Assets.find(EAssetType.VEHICLE).Cast<VehicleAsset>()
-                    .Where(v => !string.IsNullOrEmpty(v.vehicleName)).OrderBy(v => v.vehicleName.Length)
-                    .FirstOrDefault(v => v.vehicleName.ToUpperInvariant().Contains(searchTerm.ToUpperInvariant()));
+                List<VehicleAsset> vehicles = [];
+                Assets.find(vehicles);
+                vehicle = vehicles.Where(v => !string.IsNullOrEmpty(v.vehicleName))
+                    .OrderBy(v => v.vehicleName.Length).FirstOrDefault(v =>
+                    v.vehicleName.ToUpperInvariant().Contains(searchTerm.ToUpperInvariant()));
 
                 return vehicle != null;
             }

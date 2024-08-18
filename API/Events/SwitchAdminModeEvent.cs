@@ -1,20 +1,13 @@
-﻿using OpenMod.API.Commands;
-using OpenMod.Core.Eventing;
+﻿using OpenMod.Core.Eventing;
 using SDG.Unturned;
-using Steamworks;
 
 namespace Alpalis.UtilityServices.API.Events
 {
-    public class SwitchAdminModeEvent : Event
+    public class SwitchAdminModeEvent(
+        SteamPlayer steamPlayer, bool isInAdminMode) : Event
     {
-        public SwitchAdminModeEvent(
-            SteamPlayer steamPlayer, bool isInAdminMode)
-        {
-            SteamPlayer = steamPlayer;
-            IsInAdminMode = isInAdminMode;
-        }
-        public SteamPlayer SteamPlayer { get; }
+        public SteamPlayer SteamPlayer { get; } = steamPlayer;
 
-        public bool IsInAdminMode { get; set; }
+        public bool IsInAdminMode { get; set; } = isInAdminMode;
     }
 }

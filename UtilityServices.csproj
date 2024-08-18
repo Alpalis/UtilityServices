@@ -1,6 +1,10 @@
-﻿<Project>
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<NoWarn>$(NoWarn);NU1701;NU1702;CS0436;NU1605;MSB3270</NoWarn>
+		<LangVersion>latest</LangVersion>
 		<PackageLicenseExpression>EUPL-1.2</PackageLicenseExpression>
 		<PackageTags>openmod openmod-plugin unturned</PackageTags>
 		<RootNamespace>Alpalis.UtilityServices</RootNamespace>
@@ -8,28 +12,18 @@
 		<GenerateNugetPackage>true</GenerateNugetPackage>
 		<Product>Alpalis UtilityServices</Product>
 		<Authors>Pandetthe</Authors>
-		<Version>1.1.2</Version>
-		<InformationalVersion>1.1.2</InformationalVersion>
-		<PackageVersion>1.1.2</PackageVersion>
+		<Version>1.1.3</Version>
+		<InformationalVersion>1.1.3</InformationalVersion>
+		<PackageVersion>1.1.3</PackageVersion>
 		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="OpenMod.Unturned" Version="3.2.8" Condition="!Exists('..\shared.csproj')" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="config.yaml" />
 		<EmbeddedResource Include="translations.yaml" />
 	</ItemGroup>
 
-	<Import Project="..\shared.csproj" Condition="Exists('..\shared.csproj')" />
-
 	<ItemGroup>
-	  <PackageReference Update="OpenMod.Unturned" Version="3.7.4" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Patches\" />
+		<PackageReference Include="OpenMod.Unturned" Version="3.8.10" />
 	</ItemGroup>
 </Project>

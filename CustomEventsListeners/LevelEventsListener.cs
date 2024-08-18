@@ -9,12 +9,8 @@ using System.Threading.Tasks;
 
 namespace Alpalis.UtilityServices.CustomEventsListeners
 {
-    internal class LevelEventsListener : CustomEventsListener
+    internal class LevelEventsListener(IServiceProvider serviceProvider) : CustomEventsListener(serviceProvider)
     {
-        public LevelEventsListener(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-        }
-
         public override void Subscribe()
         {
             Level.onLevelExited += OnLevelExited;

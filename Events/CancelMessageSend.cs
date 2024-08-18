@@ -8,30 +8,22 @@ using System.Threading.Tasks;
 
 namespace Alpalis.UtilityServices.Events
 {
-    public class CancelMessageSend : IEventListener<UnturnedPlayerChattingEvent>
+    public class CancelMessageSend(
+        IEventBus eventBus,
+        IPluginAccessor<Main> plugin) : IEventListener<UnturnedPlayerChattingEvent>
     {
-        #region Member Variables
-        private readonly IEventBus m_EventBus;
-        private readonly Main m_Plugin;
-        #endregion Member Variables
-
-        #region Class Constructor
-        public CancelMessageSend(
-            IEventBus eventBus,
-            IPluginAccessor<Main> plugin)
-        {
-            m_EventBus = eventBus;
-            m_Plugin = plugin.Instance!;
-        }
-        #endregion Class Constructor
+        private readonly IEventBus m_EventBus = eventBus;
+        private readonly Main m_Plugin = plugin.Instance!;
 
         [EventListener(Priority = EventListenerPriority.Normal)]
-        public async Task HandleEventAsync(object? sender, UnturnedPlayerChattingEvent @event)
+        public Task HandleEventAsync(object? sender, UnturnedPlayerChattingEvent @event)
         {
             CanSendMessageEvent checkEvent = new(@event.Player);
-            m_EventBus.EmitAsync(m_Plugin, this, checkEvent);
+            _ = m_EventBus.EmitAsync(m_Plugin, this, checkEvent);
             @event.IsCancelled = checkEvent.IsCancelled;
-            if (checkEvent.IsCancelled) @event.Player.PrintMessageAsync(checkEvent.Message!);
+            if (checkEvent.IsCancelled)
+                _ = @event.Player.PrintMessageAsync(checkEvent.Message!);
+            return Task.CompletedTask;
         }
     }
 }

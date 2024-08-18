@@ -3,17 +3,11 @@ using Steamworks;
 
 namespace Alpalis.UtilityServices.API.Events
 {
-    public class GetIdentityEvent : Event
+    public class GetIdentityEvent(
+        CSteamID steamID) : Event
     {
-        public GetIdentityEvent(
-            CSteamID steamID)
-        {
-            SteamID = steamID;
-            Identity = null;
-        }
+        public CSteamID SteamID { get; } = steamID;
 
-        public CSteamID SteamID { get; }
-
-        public ushort? Identity { get; }
+        public ushort? Identity { get; } = null;
     }
 }

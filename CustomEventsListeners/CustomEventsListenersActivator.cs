@@ -12,20 +12,13 @@ namespace Alpalis.UtilityServices.CustomEventsListeners
     /// <summary>
     /// Events testing before adding to openmod
     /// </summary>
-    internal class CustomEventsListenersActivator : IDisposable
+    internal class CustomEventsListenersActivator(
+        ILifetimeScope lifetimeScope,
+        ILogger<CustomEventsListenersActivator> logger) : IDisposable
     {
-        private readonly ILifetimeScope m_LifetimeScope;
-        private readonly ILogger<CustomEventsListenersActivator> m_Logger;
-        private readonly List<ICustomEventsListener> m_UnturnedEventsListeners;
-
-        public CustomEventsListenersActivator(
-            ILifetimeScope lifetimeScope,
-            ILogger<CustomEventsListenersActivator> logger)
-        {
-            m_LifetimeScope = lifetimeScope;
-            m_Logger = logger;
-            m_UnturnedEventsListeners = new();
-        }
+        private readonly ILifetimeScope m_LifetimeScope = lifetimeScope;
+        private readonly ILogger<CustomEventsListenersActivator> m_Logger = logger;
+        private readonly List<ICustomEventsListener> m_UnturnedEventsListeners = [];
 
         public void Activate()
         {

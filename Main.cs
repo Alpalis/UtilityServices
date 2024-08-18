@@ -1,5 +1,4 @@
 ﻿using Alpalis.UtilityServices.API;
-using Alpalis.UtilityServices.Events;
 using Alpalis.UtilityServices.Models;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,22 +21,14 @@ using Alpalis.UtilityServices.CustomEventsListeners;
 
 namespace Alpalis.UtilityServices
 {
-    public class Main : OpenModUnturnedPlugin
+    public class Main(
+        ILogger<Main> logger,
+        IConfigurationManager configurationManager,
+        IServiceProvider serviceProvider) : OpenModUnturnedPlugin(serviceProvider)
     {
-        private readonly ILogger<Main> m_Logger;
-        private readonly IConfigurationManager m_ConfigurationManager;
-        private readonly IServiceProvider m_ServiceProvider;
-
-        public Main(
-            ILogger<Main> logger,
-            IConfigurationManager configurationManager,
-            IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-            m_Logger = logger;
-            m_ConfigurationManager = configurationManager;
-            m_ServiceProvider = serviceProvider;
-        }
-
+        private readonly ILogger<Main> m_Logger = logger;
+        private readonly IConfigurationManager m_ConfigurationManager = configurationManager;
+        private readonly IServiceProvider m_ServiceProvider = serviceProvider;
         private CustomEventsListenersActivator? CustomEventsListenersActivator;
 
         protected override async UniTask OnLoadAsync()
@@ -52,11 +43,12 @@ namespace Alpalis.UtilityServices
             m_Logger.LogInformation("Plugin started successfully!");
         }
 
-        protected override async UniTask OnUnloadAsync()
+        protected override UniTask OnUnloadAsync()
         {
             CustomEventsListenersActivator?.Dispose();
 
             m_Logger.LogInformation("Plugin disabled successfully!");
+            return UniTask.CompletedTask;
         }
 
         private async Task CheckGitHubNewerVersion()
