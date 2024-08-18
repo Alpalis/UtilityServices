@@ -16,6 +16,10 @@
 		<InformationalVersion>1.1.3</InformationalVersion>
 		<PackageVersion>1.1.3</PackageVersion>
 		<AssemblyName>Alpalis.UtilityServices</AssemblyName>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/Alpalis/UtilityServices</RepositoryUrl>
+		<PackageProjectUrl>https://alpalis.github.io/docs/plugins/utilityservices/about</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,5 +29,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="OpenMod.Unturned" Version="3.8.10" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 </Project>
