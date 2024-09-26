@@ -18,7 +18,7 @@ namespace Alpalis.UtilityServices.Helpers
         public static LocationDevkitNode? GetLocationNode(string place)
         {
             return (LocationDevkitNode)LevelHierarchy.instance.items.Where(i => i is LocationDevkitNode location &&
-                location.name.Contains(place, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                location.locationName.Contains(place, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         /// <summary>
